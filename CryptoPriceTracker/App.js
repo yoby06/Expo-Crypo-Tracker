@@ -1,14 +1,13 @@
  import { StyleSheet, View , FlatList} from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
-import CoinItem from './src/components/CoinItem';
 import { StatusBar } from 'expo-status-bar';
+import HomeScreen from './src/screens/HomeScreen';
+import CoinDetailedScreen from './src/screens/CoinDetailedScreen';
+
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <CoinItem name={"Yobi"}/>
-      <CoinItem name={"Mobi"}/>
-
+      <CoinDetailedScreen/>
        <StatusBar style="light"
        />
     </View>
