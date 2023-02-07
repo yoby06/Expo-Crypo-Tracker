@@ -1,6 +1,6 @@
-import React from 'react'
+import React,{useState} from 'react'
 import Coin from '../../../assets/data/crypto.json' 
-import { View, Text , Dimensions} from 'react-native'
+import { View, Text , Dimensions, TextInput} from 'react-native'
 import CoinDetailHeader from './components/CoinDetailedHeader/index';
 import styles from './styles';
 import {AntDesign} from "@expo/vector-icons"
@@ -23,7 +23,13 @@ const CoinDetailedScreen = () => {
 
     } = Coin;
 
-    const percentageColor = price_change_percentage_24h < 0 ? "#ea3943" : '#16c784'
+    const [coinValue,setCoinValue] = useState("1")
+    const [usdValue,setUsdValue] = useState(current_price.usd)
+
+
+    const percentageColor = price_change_percentage_24h < 0 ? "#ea3943" : '#16c784';
+
+    const chartColor = current_price.usd > prices[0][1] ? "#16c784 " : "#ea3943";
 
     const screenWidth = Dimensions.get("window").width;
 
@@ -34,6 +40,16 @@ const CoinDetailedScreen = () => {
       }
       return `$${parseFloat(value).toFixed(2)}`
     }
+
+    const changeUsdValue = (value) => {
+        setCoinValue(parseFloat(value))
+
+    };
+
+    const changeCoinValue = (value) => {
+      setUsdValue(parseFloat(value))
+
+    };
 
   return (
     <View style={{paddingHorizontal:10}}> 
@@ -68,11 +84,38 @@ const CoinDetailedScreen = () => {
           <Text style={styles.priceChange}>{price_change_percentage_24h.toFixed(2)}%</Text>
         </View>
       </View>
-        <View>
-          <ChartPath height={screenWidth / 2} stroke="yellow" width={screenWidth} />
-          <ChartDot style={{ backgroundColor: 'blue' }} />
-        </View>
 
+          <ChartPath 
+          strokeWidth = {5}
+          height={screenWidth / 2} 
+          stroke={chartColor}
+           width={screenWidth} />
+
+          <ChartDot style={{backgroundColor: chartColor}} />
+
+        
+        <View style={{flexDirection:"row"}}>
+          
+          <View style={{flexDirection:"row",flex:1}}>
+            <Text style={{color: "white",alignSelf:"center"}}>{symbol.toUpperCase()} </Text>
+            <TextInput 
+            style={styles.input} 
+            value={coinValue.toString()}
+            keyboardType="numeric"
+            onChangeText={changeCoinValue}
+            />
+          </View>
+          <View style={{flexDirection:"row",flex:1}}>
+            <Text style={{color: "white",alignSelf:"center"}}>USD </Text>
+            <TextInput
+             style={styles.input} 
+             value={usdValue.toString()} 
+             keyboardType="numeric"
+             onChangeText={changeUsdValue}
+            />
+          </View>
+
+        </View>
       </ChartPathProvider>
 
     </View>
