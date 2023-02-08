@@ -7,6 +7,9 @@ import {AntDesign} from "@expo/vector-icons"
 
 import { ChartDot, ChartPath, ChartPathProvider, ChartYLabel } from '@rainbow-me/animated-charts';
 
+import { useRoute } from '@react-navigation/native';
+
+
 
 const CoinDetailedScreen = () => {
 
@@ -24,8 +27,12 @@ const CoinDetailedScreen = () => {
     } = Coin;
 
     const [coinValue,setCoinValue] = useState("1")
-    const [usdValue,setUsdValue] = useState(current_price.usd)
+    const [usdValue,setUsdValue] = useState(current_price.usd.toString())
 
+    const route = useRoute();
+
+    const {params: {coinId}} = route;
+    console.log(coinId)
 
     const percentageColor = price_change_percentage_24h < 0 ? "#ea3943" : '#16c784';
 
@@ -41,13 +48,19 @@ const CoinDetailedScreen = () => {
       return `$${parseFloat(value).toFixed(2)}`
     }
 
-    const changeUsdValue = (value) => {
-        setCoinValue(parseFloat(value))
+    const changeCoinValue = (value) => {
+        setCoinValue(value);
+        const floatValue = parseFloat(value.replace(',','.')) || 0 
+        setUsdValue((floatValue * current_price.usd).toString())
 
     };
 
-    const changeCoinValue = (value) => {
-      setUsdValue(parseFloat(value))
+    const changeUsdValue = (value) => {
+      setUsdValue(value);
+      const floatValue = parseFloat(value.replace(',','.')) || 0 
+
+      setCoinValue((floatValue / current_price.usd).toString())
+
 
     };
 
@@ -100,7 +113,7 @@ const CoinDetailedScreen = () => {
             <Text style={{color: "white",alignSelf:"center"}}>{symbol.toUpperCase()} </Text>
             <TextInput 
             style={styles.input} 
-            value={coinValue.toString()}
+            value={coinValue}
             keyboardType="numeric"
             onChangeText={changeCoinValue}
             />
@@ -109,7 +122,7 @@ const CoinDetailedScreen = () => {
             <Text style={{color: "white",alignSelf:"center"}}>USD </Text>
             <TextInput
              style={styles.input} 
-             value={usdValue.toString()} 
+             value={usdValue} 
              keyboardType="numeric"
              onChangeText={changeUsdValue}
             />
